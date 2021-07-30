@@ -1,4 +1,5 @@
-const Emitter = require('events')
+const Emitter = require('events');
+const compose = require('./compose')
 
 module.export = class Applicttion extends Emitter {
   constructor(){
@@ -17,5 +18,21 @@ module.export = class Applicttion extends Emitter {
 　　this.middleWare.push(fn);
    // 类实例方法返回this可以实现链式调用
    return this;
+  }
+
+  listen(...args){
+    const server = http.createServer(this.callback());
+    return server.listen(...args)
+  }
+
+  callback(){
+    const fn = compose(this.middleWare)
+    // callback的返回值必须符合http.createServer参数形式
+    //　即　(req, res) => {}
+    const handleRequest = (req, res) => {
+      const ctx = this.createContext(req, res);
+      return this.handleRequest(ctx, fn)
+    }
+    return handleRequest;
   }
 }
