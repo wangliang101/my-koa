@@ -1,5 +1,6 @@
 const Emitter = require('events');
-const compose = require('./compose')
+const compose = require('./compose');
+const context = require('./context');
 
 module.export = class Applicttion extends Emitter {
   constructor(){
@@ -7,6 +8,7 @@ module.export = class Applicttion extends Emitter {
 
     //middleWare初始化一个数组，用来存储后续可能的中间件
     this.middleWare = [];
+    this.context = context;
   }
 
   use(fn){
@@ -18,6 +20,15 @@ module.export = class Applicttion extends Emitter {
 　　this.middleWare.push(fn);
    // 类实例方法返回this可以实现链式调用
    return this;
+  }
+
+  createContext(req, res){
+    const context = Object.create(this.context);
+    context.app = this;
+    context.req = req;
+    context.res = res;
+
+    return context;
   }
 
   listen(...args){
