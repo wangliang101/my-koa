@@ -18,7 +18,7 @@ function compose(middleWare){
     // 执行中间件方法
     function dispatch(i){
       // 取出需要执行的中间件
-      let fn = middleWare(i);
+      let fn = middleWare[i];
       // 如果ｉ等于数组长度，说明数组执行完了
       if(i === middleWare.length){
         fn = next; //让Fn等于外部传进来的next;

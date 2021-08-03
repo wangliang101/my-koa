@@ -1,13 +1,15 @@
 // https://zhuanlan.zhihu.com/p/280813365
 // https://github.com/dennis-jiang/Front-End-Knowledges/blob/master/Examples/Node.js/KoaCore/index.js
-const Koa = require('koa')
-const app = new Koa;
+// const Koa = require('koa')
+const Koa = require('./myKoa/application')
+const app = new Koa();
 
 app.use(async (ctx, next) => {
   const start = Date.now();
   await next();
   const ms = Date.now() - start;
-  console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
+  //   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
+  console.log(`${ctx.req.method} ${ctx.req.url} - ${ms}ms`)
 })
 
 app.use((ctx) => {

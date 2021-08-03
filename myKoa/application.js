@@ -1,14 +1,16 @@
 const Emitter = require('events');
+const http = require('http');
 const compose = require('./compose');
-const context = require('./context');
+// const context = require('./context');
+const respond = require('./respond')
 
-module.export = class Applicttion extends Emitter {
+module.exports = class Application extends Emitter {
   constructor(){
     super();
 
     //middleWare初始化一个数组，用来存储后续可能的中间件
     this.middleWare = [];
-    this.context = context;
+    this.context = {};
   }
 
   use(fn){
@@ -29,6 +31,18 @@ module.export = class Applicttion extends Emitter {
     context.res = res;
 
     return context;
+  }
+
+  handleRequest(ctx, fnMiddleWare){
+    const handleResponse = () => respond(ctx)
+
+    // 调用中间件处理
+    // 所有梳理完就电泳hansleResponse返回请求
+    return fnMiddleWare(ctx)
+      .then(handleResponse)
+      .catch((err) => {
+        console.log("somethis is wrong", err)
+      })
   }
 
   listen(...args){
